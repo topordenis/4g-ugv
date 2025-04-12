@@ -5,7 +5,7 @@ interface JoystickProps {
   position: { x: number, y: number };
 }
 
-const Joystick: React.FC<JoystickProps> = ({ onChange, position } : JoystickProps) => {
+const Joystick: React.FC<JoystickProps> = ({ onChange, position, setPosition } : JoystickProps) => {
   
   const [dragging, setDragging] = useState(false);
   const joystickRef = useRef<HTMLDivElement>(null);
@@ -55,7 +55,7 @@ const Joystick: React.FC<JoystickProps> = ({ onChange, position } : JoystickProp
     if (e.key === "ArrowRight") onChange({ x: 100, y: 50 });
   };
   const handleKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "ArrowUp" || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') setPosition({ x: 50, y: 50 });
+    if (e.key === "ArrowUp" || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') onChange({ x: 50, y: 50 });
   };
 
   React.useEffect(() => {

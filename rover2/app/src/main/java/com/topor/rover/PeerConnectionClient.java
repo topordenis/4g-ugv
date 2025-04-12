@@ -214,7 +214,7 @@ public class PeerConnectionClient {
 
             this.pc = factory.createPeerConnection(rtcConfig, this);
 
-            pc.addTrack(localMS.audioTracks.get(0), Collections.singletonList("ARDAMS"));
+            //.pc.addTrack(localMS.audioTracks.get(0), Collections.singletonList("ARDAMS"));
             pc.addTrack(localMS.videoTracks.get(0), Collections.singletonList("ARDAMS"));
 
             mListener.onStatusChanged("CONNECTING");
@@ -319,6 +319,8 @@ public class PeerConnectionClient {
                 .setVideoDecoderFactory(decoderFactory)
                 .setVideoEncoderFactory(encoderFactory)
                 .createPeerConnectionFactory();
+
+
 
        // MessageHandler messageHandler = new MessageHandler();
 
@@ -434,8 +436,8 @@ public class PeerConnectionClient {
 
         localMS.addTrack(factory.createVideoTrack("LOCAL_MS_VS", videoSource));
 
-        audioSource = factory.createAudioSource(new MediaConstraints());
-        localMS.addTrack(factory.createAudioTrack("LOCAL_MS_AT", audioSource));
+//        audioSource = factory.createAudioSource(new MediaConstraints());
+  //      localMS.addTrack(factory.createAudioTrack("LOCAL_MS_AT", audioSource));
 
         mListener.onAddLocalStream(localMS);
     }
@@ -590,11 +592,11 @@ public class PeerConnectionClient {
 
         localMS.addTrack(factory.createVideoTrack("LOCAL_MS_VS", videoSource));
 
-        audioSource = factory.createAudioSource(new MediaConstraints());
-        localMS.addTrack(factory.createAudioTrack("LOCAL_MS_AT", audioSource));
+       // audioSource = factory.createAudioSource(new MediaConstraints());
+       // localMS.addTrack(factory.createAudioTrack("LOCAL_MS_AT", audioSource));
 
         if (peer != null) {
-            peer.pc.addTrack(localMS.audioTracks.get(0), Collections.singletonList("ARDAMS"));
+         //   peer.pc.addTrack(localMS.audioTracks.get(0), Collections.singletonList("ARDAMS"));
             peer.pc.addTrack(localMS.videoTracks.get(0), Collections.singletonList("ARDAMS"));
 
             // Important: since media tracks changed, we have to renegotiate by sending a new offer

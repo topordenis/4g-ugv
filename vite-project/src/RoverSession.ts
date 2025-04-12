@@ -34,6 +34,13 @@ export class RoverSession {
     this._onUpdate = _fn;
   }
 
+  sendCommands(speed: number, steer: number) {
+    console.info('send commands to channel ' + this._commandsChannel)
+    if (this._commandsChannel) this._commandsChannel.send(JSON.stringify({
+      steer: steer,
+      speed: speed
+    }));
+  }
   async on_websocket_connect(event: Event) {
     await this.send(
       <RegisterAsRoverClientMessage>{
@@ -53,12 +60,32 @@ export class RoverSession {
   async create_offer(deviceName: string) {
     console.info("websocket connect");
     this._peer = new RTCPeerConnection(config);
-   /* this._peer.ontrack = function (event) {
-       console.info('called on track!! merge secundele')
+   this._peer.ontrack = function (event) {
+    console.log('Received track:', event.track.kind);
+  
+    console.info('streams count ' + event.streams.length)
+    if (event.streams && event.streams.length > 0) {
+      console.log('Received stream with id:', event.streams[0].id);
+      
+      console.log('track ' + JSON.stringify(event.streams[0].getTracks()))
+      // Assign the stream to a video element
+      const remoteVideo = document.getElementById('remoteVideo') as HTMLDivElement | null;
+      if (remoteVideo) {
+      //@ts-ignore
+      console.info('set stream to element')
+      
+        remoteVideo.srcObject = event.streams[0];
+        //@ts-ignore
+        remoteVideo.play().catch((err) => {
+          console.error('Error trying to play video:', err);
+        });
+        
+      }
+    }
       }
     this._peer.addTransceiver('video', {
         direction: 'sendrecv'
-      })*/
+      })
     this._peer.onicecandidate = (event: RTCPeerConnectionIceEvent) =>
       this.on_local_ice(event);
 
@@ -66,14 +93,14 @@ export class RoverSession {
         if (this._peer)
         console.info("ice connection state change " + this._peer.iceConnectionState);
     }
-  /*  this._commandsChannel = this._peer.createDataChannel("commands");
+   this._commandsChannel = this._peer.createDataChannel("commands");
     this._commandsChannel.onopen = (event: Event) =>
       this.on_data_channel_open(event);
     this._commandsChannel.onclose = (event: Event) =>
       this.on_data_channel_close(event);
     this._commandsChannel.onmessage = (event: MessageEvent) =>
       this.on_data_channel_message(event);
-    */
+    
     await this._peer.setLocalDescription(await this._peer.createOffer({
         offerToReceiveAudio: false,
         offerToReceiveVideo: true,
@@ -121,6 +148,7 @@ export class RoverSession {
         */
     try {
       const msg = JSON.parse(event.data);
+      console.info('got msg ' + JSON.stringify(msg) )
       switch (msg.type) {
         case "ICE_CANDIDATE_MESSAGE":
           this.on_ice_candidate(JSON.parse(msg.data) as IceCandidateMessage);
@@ -138,9 +166,9 @@ export class RoverSession {
   }
   async on_data_channel_open(event: Event) {
     console.info("data channel open");
-    this._heartbeatInterval = setInterval(() => {
-      if (this._commandsChannel) this._commandsChannel.send("heartbeat");
-    }, 3000);
+    // this._heartbeatInterval = setInterval(() => {
+    //   if (this._commandsChannel) this._commandsChannel.send("heartbeat");
+    // }, 300);
   }
   async on_data_channel_close(event: Event) {
     console.info("data channel open");

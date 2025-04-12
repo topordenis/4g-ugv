@@ -67,7 +67,9 @@ public class Rover {
     private ArrayList<RoverCameraCapture> _capturers;
 
     private final MediaConstraints pcConstraints = new MediaConstraints();
-
+    public EglBase GetEgl(){
+        return _rootEglBase;
+    }
     public Rover(String wsUrl, MainActivity activity,  EglBase rootEglBase) {
         _wsUrl = wsUrl;
         _rootEglBase = rootEglBase;
@@ -76,7 +78,7 @@ public class Rover {
         roverClients = new ArrayList<RoverClient>();
         _capturers = new ArrayList<RoverCameraCapture>();
 
-     /*   pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
+        pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
         pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
@@ -85,9 +87,12 @@ public class Rover {
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxWidth", Integer.toString(2400)));
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxFrameRate", Integer.toString(30)));
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minFrameRate", Integer.toString(30)));
-*/
+
     }
 
+    public Context GetActivity(){
+        return _activity;
+    }
 
     public void OnWebSocketMessage(String data) {
         Log.d("WebSocketHandler", "Received message: " + data);
@@ -124,14 +129,17 @@ public class Rover {
 
             if (client.isPresent()) {
 
-             //  client.get().setCamera(sdp.deviceName);
+
+                client.get().setCamera(sdp.deviceName);
+
 
                 SessionDescription sdp_description = new SessionDescription(
                         SessionDescription.Type.OFFER,
                         sdp.sdp
                 );
                 client.get().GetPeer().setRemoteDescription(client.get(), sdp_description);
-                Log.i("Rover","createAnswer for sdp description");
+                Log.i("Rover","createAnswer for sdp description for camera {}");
+                Log.i("rover:cam", sdp.deviceName);
                 client.get().GetPeer().createAnswer(client.get(), pcConstraints);
 
             }

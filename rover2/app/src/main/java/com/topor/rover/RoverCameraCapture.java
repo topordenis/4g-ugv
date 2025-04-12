@@ -32,7 +32,7 @@ public class RoverCameraCapture {
     void Initialize(PeerConnectionFactory peerConnectionFactory ,EglBase rootEglBase, Context ctx){
         videoSource = peerConnectionFactory.createVideoSource(_capturer.isScreencast());
 
-        surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", rootEglBase.getEglBaseContext());
+        surfaceTextureHelper = SurfaceTextureHelper.create("VideoCapturerThread", rootEglBase.getEglBaseContext());
         _capturer.initialize(surfaceTextureHelper,
                 (Context)ctx, videoSource.getCapturerObserver());
 
